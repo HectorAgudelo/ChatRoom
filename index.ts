@@ -14,16 +14,18 @@ const io = new Server(server,{
 
 const PORT: number = 5000;
 
-app.get('/', (req, res) => {
-  res.send('The sedulous hyena ate the antelope!');
-});
+// app.get('/', (req: any, res: any) => {
+//   res.send('The sedulous hyena ate the antelope!');
+// });
 
-app.get('/test', (req, res) => {
-  return res.json({ message: 'Hello from back end' });
-});
+// app.get('/test', (eq: any, res: any) => {
+//   return res.json({ message: 'Hello from back end' });
+// });
 
 io.on('connection', (socket: Socket) => {
   console.log('New connection....');
+
+  socket.emit('message', 'welcome to this Chat')
 });
 
 io.on("message", (data:any)=> {

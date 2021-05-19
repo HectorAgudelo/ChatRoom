@@ -1,4 +1,10 @@
-.messages{
-    overflow-y:auto;
-    padding:4px
+.msgDisplay {
+    height: calc(100vh - 3rem);
+    border-style: solid; 
+    overflow-y: scroll;
+
 }
+
+
+
+

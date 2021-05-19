@@ -5,12 +5,13 @@ function MsgInput({ sendMessage }) {
   const [message, setMessage] = useState('');
 
   const handleSend = () => {
+   
     sendMessage(message);
     setMessage('');
   };
 
   return (
-    <Container>
+    <Container style={{padding:'3px'}}>
       <InputGroup>
         <FormControl
           type='text'

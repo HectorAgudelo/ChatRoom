@@ -1,23 +1,25 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import MsgInput from './MsgInput/MsgInput';
-import UsersLits from './UsersList/UserList';
-import DisplayMsg from './DisplayMsg/DisplayMsg';
+import MsgInput from './MsgInput/MsgInput'
+import UsersLits from './UsersList/UserList'
+import DisplayMsg from './DisplayMsg/DisplayMsg'
 
-function ChatContainer({ sendMessage, messages }) {
+
+function ChatContainer({sendMessage, messages}) {
+
   return (
-    <Container style={{ borderStyle: 'ridge', height: '100vh' }}>
+    <Container style={{borderStyle:'ridge', height:'100vh'}}>
       <Row>
-        <Col xs={{ span: 9 }}>
+        <Col xs={{span:9}}>
           <Row>
-            <DisplayMsg messages={messages} />
+            <DisplayMsg messages={messages}/>
           </Row>
           <Row>
             <MsgInput sendMessage={sendMessage} />
           </Row>
         </Col>
         <Col>
-          <UsersLits />
+          <UsersLits/>
         </Col>
       </Row>
     </Container>

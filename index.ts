@@ -15,15 +15,24 @@ const io = new Server(server, {
 
 const PORT = 5000;
 
-// app.get('/', (req: any, res: any) => {
-//   res.send('The sedulous hyena ate the antelope!');
-// });
+const users: any = [];
+console.log(users)
 
-// app.get('/test', (eq: any, res: any) => {
-//   return res.json({ message: 'Hello from back end' });
-// });
+//user that joins to the chat
+function newUser(id: any, userName: any, room: any) {
+  const user = { id, userName, room };
+  users.push(user);
+  return user;
+}
+//current user
+function currentUser(id: any) {
+  return users.find((user: any) => {
+    user.id === id;
+  });
+}
+
 // this function sets up the display chat messages format
-function messageFormat(userName: string, text: string) {
+function messageFormat(userName: string, text: string | string[]) {
   return {
     userName,
     text,
@@ -32,14 +41,17 @@ function messageFormat(userName: string, text: string) {
 
 // connection established
 io.on('connection', (socket: Socket) => {
-  
   const Admin = 'Admin';
 
-  // welcome message
-  socket.emit('message', messageFormat(Admin, 'welcome to this Chat'));
+  socket.on('joinChat', ({ userId, isCheck }) => {
+    const user: any = newUser(socket.id, userId, isCheck )
+    socket.join(user.isCheck)
+    // welcome message
+    socket.emit('message', messageFormat(Admin, 'welcome to this Chat'));
+  });
 
   // // emits message to users about new user
-  // socket.broadcast.emit('message', messageFormat(Admin, 'A new user just entered the chat'));
+  // socket.broadcast.to(user.room).emit('message', messageFormat(Admin, `${user.userId}A new user just entered the chat`));
 
   // // emits message about user disconnecting
   // socket.on('disconnect', () => {
@@ -48,8 +60,9 @@ io.on('connection', (socket: Socket) => {
 
   //listening for users messages
   socket.on('userMessage', (arg: string[]) => {
+    const user = currentUser(socket.id)
     console.log(socket.id, arg);
-    io.emit('message', messageFormat('User', arg));
+    io.to(user.isCheck).emit('message', messageFormat(user, arg));
   });
 });
 

@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ChatAccess.css';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import {Link} from 'react-router-dom'
 
-//landing area where user picks a username
+//landing area where user picks a username, and chat rooms
 
-function Login() {
+function Login({location}) {
+  
+  const [userId, setUserId] = useState();
+  const [isCheck, setIsCheck] = useState();
+  
   return (
     <Container className='loginContainer'>
       <Row>
@@ -20,35 +25,47 @@ function Login() {
                   <Form.Check
                     type='radio'
                     label='JS Chat'
-                    name='formHorizontalRadios'
+                   
                     id='formHorizontalRadios1'
+                    value = "JSChat"
+                    onChange = {(e)=>{setIsCheck(e.target.value)}}
                   />
                 </Col>
                 <Col>
                   <Form.Check
                     type='radio'
                     label='Java Chat'
-                    name='formHorizontalRadios'
+                    
                     id='formHorizontalRadios2'
+                    value= "JavaChat"
+                    onChange = {(e)=>{setIsCheck(e.target.value)}}
                   />
                 </Col>
                 <Col>
                   <Form.Check
                     type='radio'
                     label='Python Chat'
-                    name='formHorizontalRadios'
+                   
                     id='formHorizontalRadios3'
+                    value= "PythonChat"
+                    onChange = {(e)=>{setIsCheck(e.target.value)}}
                   />
                 </Col>
               </Row>
             </Form.Group>
             <Form.Group className='text-center'>
               <Form.Label>Type a Desired Username</Form.Label>
-              <Form.Control type='text' placeholder='' />
+              <Form.Control 
+                type='text' 
+                placeholder='' 
+                value={userId}
+                onChange ={(e)=>setUserId(e.target.value)}/>
             </Form.Group>
+            <Link onClick ={e=>(!userId || !isCheck) ? e.preventDefault() : null} to ={`/chat?name=${userId}&room=${isCheck}`}>
             <Button variant='primary' type='submit' className='mx-auto d-block'>
               Submit
             </Button>
+            </Link>
           </Form>
         </Col>
       </Row>

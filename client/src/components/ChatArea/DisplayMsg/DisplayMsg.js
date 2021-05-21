@@ -2,6 +2,7 @@ import React,{useRef, useEffect} from 'react';
 import { Container } from 'react-bootstrap';
 import './DisplayMsg.css';
 
+
 function DisplayMsg({ messages }) {
 
   const focusEffect = useRef(null)
@@ -14,7 +15,6 @@ function DisplayMsg({ messages }) {
       })
     }
   },[focusEffect])
-
 
    console.log(messages);
   return (

@@ -5,8 +5,10 @@ import UsersLits from './UsersList/UserList'
 import DisplayMsg from './DisplayMsg/DisplayMsg'
 
 
-function ChatContainer({sendMessage, messages}) {
 
+function ChatContainer({sendMessage, messages, location}) {
+
+  console.log(location);
   return (
     <Container style={{borderStyle:'ridge', height:'100vh'}}>
       <Row>

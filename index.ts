@@ -1,6 +1,7 @@
 import express from 'express';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
+import { newUser, getUser } from './users';
 import cors from 'cors';
 
 const app = express();
@@ -15,26 +16,10 @@ const io = new Server(server, {
 
 const PORT = 5000;
 
-const users: any = [];
-console.log(users)
-
-//user that joins to the chat
-function newUser(id: any, userName: any, room: any) {
-  const user = { id, userName, room };
-  users.push(user);
-  return user;
-}
-//current user
-function currentUser(id: any) {
-  return users.find((user: any) => {
-    user.id === id;
-  });
-}
-
 // this function sets up the display chat messages format
-function messageFormat(userName: string, text: string | string[]) {
+function messageFormat(name: string, text: string | string[]): any {
   return {
-    userName,
+    name,
     text,
   };
 }
@@ -43,15 +28,22 @@ function messageFormat(userName: string, text: string | string[]) {
 io.on('connection', (socket: Socket) => {
   const Admin = 'Admin';
 
-  socket.on('joinChat', ({ userId, isCheck }) => {
-    const user: any = newUser(socket.id, userId, isCheck )
-    socket.join(user.isCheck)
+  socket.on('joinChat', ({ name, room }) => {
+    const user = newUser(socket.id, name, room);
+    socket.join(user.room);
     // welcome message
-    socket.emit('message', messageFormat(Admin, 'welcome to this Chat'));
+    socket.emit(
+      'message',
+      messageFormat(
+        Admin,
+        `Welcome ${user.name} to ${user.room} Chat room`
+      )
+    );
+    // // emits message to users about new user
+  // socket.broadcast.to(user.room).emit('message', messageFormat(Admin, `${user.userId}A new user just entered the chat`));
   });
 
-  // // emits message to users about new user
-  // socket.broadcast.to(user.room).emit('message', messageFormat(Admin, `${user.userId}A new user just entered the chat`));
+  
 
   // // emits message about user disconnecting
   // socket.on('disconnect', () => {
@@ -60,9 +52,14 @@ io.on('connection', (socket: Socket) => {
 
   //listening for users messages
   socket.on('userMessage', (arg: string[]) => {
-    const user = currentUser(socket.id)
-    console.log(socket.id, arg);
-    io.to(user.isCheck).emit('message', messageFormat(user, arg));
+    console.log('before sending it as par to getUser func', socket.id);
+    const gettingUser = getUser(socket.id);
+
+    console.log('this should bring the user id stored', gettingUser);
+    io.to(gettingUser.room).emit(
+      'message',
+      messageFormat(gettingUser.name, arg)
+    );
   });
 });
 

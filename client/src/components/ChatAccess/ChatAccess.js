@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 //landing area where user picks a username, and chat rooms
 
 function Login() {
-  const [userId, setUserId] = useState();
+  const [userId, setUserId] = useState('');
   const [isCheck, setIsCheck] = useState();
 
   return (

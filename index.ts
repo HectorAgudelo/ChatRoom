@@ -1,7 +1,14 @@
 import express from 'express';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
-import { newUser, getUser } from './users';
+import {
+  newUser,
+  getUser,
+  messageFormat,
+  userLeave,
+  usersInRoom,
+} from './users';
+import fs from 'fs';
 import cors from 'cors';
 
 const app = express();
@@ -16,12 +23,21 @@ const io = new Server(server, {
 
 const PORT = 5000;
 
-// this function sets up the display chat messages format
-function messageFormat(name: string, text: string | string[]): any {
-  return {
-    name,
-    text,
-  };
+//stored messages array/
+let chatMessages: any = [];
+
+if (fs.existsSync('chatHistory.json')) {
+  const rawContent = fs.readFileSync('chatHistory.json', 'utf8');
+  chatMessages = JSON.parse(rawContent);
+}
+
+//push new messages to chatMessages array and condition to keep messages under 100
+function storeNewMessage(newMsg: any) {
+  chatMessages.push(newMsg);
+  if (chatMessages.length > 30) {
+    chatMessages.shift();
+  }
+  fs.writeFileSync('chatHistory.json', JSON.stringify(chatMessages, null, 2));
 }
 
 // connection established
@@ -31,31 +47,46 @@ io.on('connection', (socket: Socket) => {
   socket.on('joinChat', ({ name, room }) => {
     const user = newUser(socket.id, name, room);
     socket.join(user.room);
+    //filters messages by room
+    const messageHistory = chatMessages.filter((msg: any) => msg.room === room);
+
+    //sends messages history to the front
+    socket.emit('previousMessages', ...messageHistory);
     // welcome message
     socket.emit(
       'message',
-      messageFormat(
-        Admin,
-        `Welcome ${user.name} to ${user.room} Chat room`
-      )
+      messageFormat(Admin, `Welcome ${user.name} to ${user.room} room`)
     );
-    // // emits message to users about new user
-  // socket.broadcast.to(user.room).emit('message', messageFormat(Admin, `${user.userId}A new user just entered the chat`));
+    //emits message to users about new user
+    socket.broadcast
+      .to(user.room)
+      .emit(
+        'message',
+        messageFormat(Admin, `${user.name} just joined ${user.room} room`)
+      );
+
+    // // emits message about user disconnecting
+    socket.on('disconnect', () => {
+      const user = userLeave(socket.id);
+      if (user) {
+        io.to(user.room).emit(
+          'message',
+          messageFormat(Admin, `${user.name} just left the ${user.room} room`)
+        );
+      }
+    });
   });
-
-  
-
-  // // emits message about user disconnecting
-  // socket.on('disconnect', () => {
-  //   io.emit('message', messageFormat(Admin,'User just disconnected from the chat'));
-  // });
 
   //listening for users messages
   socket.on('userMessage', (arg: string[]) => {
-    console.log('before sending it as par to getUser func', socket.id);
     const gettingUser = getUser(socket.id);
+    //call of the storeNewMessage function (stores up to 30 messages)
+    storeNewMessage({
+      name: gettingUser.name,
+      room: gettingUser.room,
+      text: arg,
+    });
 
-    console.log('this should bring the user id stored', gettingUser);
     io.to(gettingUser.room).emit(
       'message',
       messageFormat(gettingUser.name, arg)

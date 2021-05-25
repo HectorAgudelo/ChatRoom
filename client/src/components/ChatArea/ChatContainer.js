@@ -7,7 +7,7 @@ import {
   Button,
   FormControl,
 } from 'react-bootstrap';
-import './ChatContainer.css';
+import './ChatArea.css';
 import { io } from 'socket.io-client';
 import querystring from 'query-string';
 
@@ -19,9 +19,7 @@ function ChatContainer({ location }) {
   const [message, setMessage] = useState('');
   //handling of messaging back/front ends
   const [messages, setMessages] = useState([]);
-  // sets name and room
-  // const [name, setName] = useState('');
-  // const [room, setRoom] = useState('');
+
 
   useEffect(() => {
     //grabs user credentials and room data from prop location (URL)
@@ -29,8 +27,6 @@ function ChatContainer({ location }) {
       ignoreQueryPrefix: true,
     });
     socket = io(Server);
-    // setName(name);
-    // setRoom(room);
     //send user credentials and room to the server
     socket.emit('joinChat', { name, room });
   }, [Server, location.search]);
@@ -49,12 +45,18 @@ function ChatContainer({ location }) {
 
   //handles the user input in chat
   useEffect(() => {
+    socket.on('previousMessages', (...data) => {
+      setMessages((prev) => prev.concat(data));
+    });
     //send messages to the display
     socket.on('message', (message) => {
       setMessages((prev) => [...prev, message]);
-      console.log('======', message);
     });
+    socket.on('disconnect', (message) => {
+      setMessages(message);
+    })
   }, []);
+
 
   // handling messages to the server
   const handleSend = () => {
@@ -102,10 +104,18 @@ function ChatContainer({ location }) {
         </Col>
         <Col>
           {/* list connected users */}
-          <Container
-            style={{ borderStyle: 'solid', height: '50vh', padding: '15px' }}
+          <Container ref={focusEffect}
+            style={{
+              borderStyle: 'solid',
+              height: '50vh',
+              padding: '15px',
+            }}
           >
-            <h1>users list</h1>
+               <h1>users list</h1> 
+            <div>
+        
+           
+            </div>
           </Container>
         </Col>
       </Row>

@@ -1,6 +1,13 @@
 .msgDisplay {
-    height: calc(100vh - 3rem);
-    border-style: solid; 
-    overflow-y: scroll;
+  height: calc(100vh - 3rem);
+  border-style: solid;
+  overflow-y: scroll;
+}
 
+.userDisplay {
+  height: calc(100vh - 103px);
+  overflow-y: scroll;
+  border: 'solid';
+  height: '50vh';
+  padding: '15px';
 }

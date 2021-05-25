@@ -22,7 +22,7 @@ const index = users.findIndex((user:any)=> user.id === id)
 
 // get users in a room
 export const usersInRoom = (room:any): any => {
-return users.filter((user:any)=>{user.room === room})
+return users.filter((user:any)=>user.room === room)
 }
 
 // this function sets up the display chat messages format

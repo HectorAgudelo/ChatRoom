@@ -8,9 +8,8 @@ function App() {
 
   return (
     <Router className='App'>
-      <Route path='/chat' component={ChatContainer} />
-
-      <Route path='/login' component={Login} />
+      <Route path='/' exact component={Login} /> 
+      <Route path='/chat' exact component={ChatContainer} />
     </Router>
   );
 }

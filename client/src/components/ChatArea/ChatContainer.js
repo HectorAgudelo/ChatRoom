@@ -19,8 +19,9 @@ function ChatContainer({ location }) {
   const [message, setMessage] = useState('');
   //handling of messaging back/front ends
   const [messages, setMessages] = useState([]);
-
-
+  const [roomUsers, setRoomUsers] = useState([]);
+  const [room, setRoom] = useState([]);
+  console.log(roomUsers);
   useEffect(() => {
     //grabs user credentials and room data from prop location (URL)
     const { name, room } = querystring.parse(location.search, {
@@ -29,7 +30,20 @@ function ChatContainer({ location }) {
     socket = io(Server);
     //send user credentials and room to the server
     socket.emit('joinChat', { name, room });
-  }, [Server, location.search]);
+
+    socket.on('roomUsers', (...data) => {
+      const room = data[0].room;
+      const userNames = [];
+      const userData = data[0].users;
+
+      for (let i = 0; i < userData.length; i++) {
+        userNames.push(userData[i].name);
+      }
+
+      setRoom(room);
+      setRoomUsers(userNames);
+    });
+  }, [location.search]);
 
   //allows scroll-focus effect
   const focusEffect = useRef(null);
@@ -54,9 +68,8 @@ function ChatContainer({ location }) {
     });
     socket.on('disconnect', (message) => {
       setMessages(message);
-    })
+    });
   }, []);
-
 
   // handling messages to the server
   const handleSend = () => {
@@ -103,18 +116,16 @@ function ChatContainer({ location }) {
           </Row>
         </Col>
         <Col>
+        <h1>{room}</h1>
           {/* list connected users */}
-          <Container ref={focusEffect}
-            style={{
-              borderStyle: 'solid',
-              height: '50vh',
-              padding: '15px',
-            }}
-          >
-               <h1>users list</h1> 
+          <Container className='userDisplay' ref={focusEffect}>
+            
             <div>
-        
-           
+              {roomUsers.map((user, i) => (
+                <ul key={i}>
+                  <span>{user}</span>
+                </ul>
+              ))}
             </div>
           </Container>
         </Col>

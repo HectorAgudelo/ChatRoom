@@ -53,9 +53,10 @@ io.on('connection', (socket: Socket) => {
     //sends messages history to the front
     socket.emit('previousMessages', ...messageHistory);
     // welcome message
+ 
     socket.emit(
       'message',
-      messageFormat(Admin, `Welcome ${user.name} to ${user.room} room`)
+      messageFormat(Admin, `Welcome ${user.name} to ${user.room} room. Take a look at previous conversations!`)
     );
     //emits message to users about new user
     socket.broadcast
@@ -73,7 +74,15 @@ io.on('connection', (socket: Socket) => {
           'message',
           messageFormat(Admin, `${user.name} just left the ${user.room} room`)
         );
+        io.to(user.room).emit('roomUsers', {
+          room: user.room,
+          users: usersInRoom(user.room),
+        });
       }
+    });
+    io.to(user.room).emit('roomUsers', {
+      room: user.room,
+      users: usersInRoom(user.room),
     });
   });
 

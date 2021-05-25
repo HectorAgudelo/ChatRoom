@@ -24,7 +24,7 @@ const userLeave = (id) => {
 exports.userLeave = userLeave;
 // get users in a room
 const usersInRoom = (room) => {
-    return users.filter((user) => { user.room === room; });
+    return users.filter((user) => user.room === room);
 };
 exports.usersInRoom = usersInRoom;
 // this function sets up the display chat messages format

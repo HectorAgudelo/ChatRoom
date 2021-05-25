@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
         //sends messages history to the front
         socket.emit('previousMessages', ...messageHistory);
         // welcome message
-        socket.emit('message', users_1.messageFormat(Admin, `Welcome ${user.name} to ${user.room} room`));
+        socket.emit('message', users_1.messageFormat(Admin, `Welcome ${user.name} to ${user.room} room. Take a look at previous conversations!`));
         //emits message to users about new user
         socket.broadcast
             .to(user.room)
@@ -52,7 +52,15 @@ io.on('connection', (socket) => {
             const user = users_1.userLeave(socket.id);
             if (user) {
                 io.to(user.room).emit('message', users_1.messageFormat(Admin, `${user.name} just left the ${user.room} room`));
+                io.to(user.room).emit('roomUsers', {
+                    room: user.room,
+                    users: users_1.usersInRoom(user.room),
+                });
             }
+        });
+        io.to(user.room).emit('roomUsers', {
+            room: user.room,
+            users: users_1.usersInRoom(user.room),
         });
     });
     //listening for users messages

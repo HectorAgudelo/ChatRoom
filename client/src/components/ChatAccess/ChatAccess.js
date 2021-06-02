@@ -1,13 +1,30 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-undef */
 import React, { useState } from 'react';
 import './ChatAccess.css';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
+
+
+
+
 //landing area where user picks a username, and chat rooms
 
 function Login() {
+ 
   const [userId, setUserId] = useState('');
   const [isCheck, setIsCheck] = useState();
+
+
+  const prevent = (e) => {
+   
+ 
+    if (!userId || !isCheck){
+      e.preventDefault()
+    }
+  
+  };
 
   return (
     <Container className='loginContainer'>
@@ -24,7 +41,7 @@ function Login() {
                   <Form.Check
                     type='radio'
                     label='JS Chat'
-                    name="formHorizontalRadios"
+                    name='formHorizontalRadios'
                     id='formHorizontalRadios1'
                     value='JSChat'
                     onChange={(e) => {
@@ -36,7 +53,7 @@ function Login() {
                   <Form.Check
                     type='radio'
                     label='Java Chat'
-                    name="formHorizontalRadios"
+                    name='formHorizontalRadios'
                     id='formHorizontalRadios2'
                     value='JavaChat'
                     onChange={(e) => {
@@ -48,7 +65,7 @@ function Login() {
                   <Form.Check
                     type='radio'
                     label='Python Chat'
-                    name="formHorizontalRadios"
+                    name='formHorizontalRadios'
                     id='formHorizontalRadios3'
                     value='PythonChat'
                     onChange={(e) => {
@@ -68,7 +85,8 @@ function Login() {
               />
             </Form.Group>
             <Link
-              onClick={(e) => (!userId || !isCheck ? e.preventDefault() : null)}
+             
+              onClick={prevent}
               to={`/chat?name=${userId}&room=${isCheck}`}
             >
               <Button

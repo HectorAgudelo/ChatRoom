@@ -1,13 +1,32 @@
+.entireDisplay{
+  background-color: #D3D3D3 ;
+  border-radius: 25px;
+  box-shadow: 10px 10px 8px rgba(3, 3, 71, 0.822);
+  opacity: 0.9;
+}
+
 .msgDisplay {
   height: calc(100vh - 3rem);
-  border-style: solid;
   overflow-y: scroll;
+  background-color: aliceblue;
+  border-radius: 25px;
+  box-shadow: 4px 2px 8px grey;
 }
 
 .userDisplay {
-  height: calc(100vh - 103px);
-  overflow-y: scroll;
-  border: 'solid';
+  height: calc(100vh - 125px);
+  overflow-y: scroll; 
   height: '50vh';
-  padding: '15px';
+  background-color: aliceblue;
+  border-radius: 25px;
+  box-shadow: 4px 2px 8px grey;
+}
+
+.chatName {
+  text-shadow: 2px 2px 8px #ff00003b;
+  background-color: lightgray;
+}
+
+.inputBar {
+  box-shadow: 5px 10px 5px grey;
 }
